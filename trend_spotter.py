@@ -112,7 +112,7 @@ if __name__ == "__main__":
 	
 	
 	
-	#get indicies of all those stocks higher at date end compared to date start
+	#get indicies of all those stocks (yahoo finance) higher at date end compared to date start
 	if 1==2:
 		inds = []
 		for i in range(len(all_tickers)):
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 			except:
 				print('Error: Unable to load data','ticker no ',i)
 	
-	#get all stocks between start and end date
+	#get all stocks (yahoo finance) between start and end date and save to a csv file
 	print(len(all_tickers))
 	if 1==2:
 		inds = []
@@ -145,54 +145,3 @@ if __name__ == "__main__":
 	#read all stocks, get guppys and apply filters
 	#2020-09-08 to be continued ..
 	
-	
-	#get the well performing stocks and save to csv (To be updated)
-	if 1==2:
-		data, percents, vocab = dataprep.get_stock_data(ticker = 'BHP.AX', startdate=start, enddate=end, check_data = False) #get dates only
-		gooddat = pd.DataFrame(index=data.index)
-		for i in range(len(all_tickers)):
-			print(i)
-			try:
-				data, percents, vocab = dataprep.get_stock_data(ticker = all_tickers.iloc[i]['ASX code'], startdate=start, enddate=end, check_data = False)
-	
-				gooddat[all_tickers.iloc[i]['ASX code'][0:-3]]=data['Close']
-
-			except:
-				print('Error: Unable to load data','ticker no ',i)
-		gooddat.to_csv('good_stocks_close.csv')#,index=False)	
-	
-	
-	#plot some random stocks with guuppy MAs
-	if 1==2:
-		gooddat = pd.read_csv('good_stocks_close.csv')
-		
-		#company = all_tickers.iloc[i]['Company name']
-		#dates = pd.to_datetime(gooddat['Date']) #dates
-		dates = np.arange(len(gooddat)) # use numbers instead of dates to avoid weekend bumps
-		tot_days = len(dates) #total days
-		x=np.arange(tot_days)
-		
-		#mylist = ['CDA', 'MP1','SAR','A2M', 'VOR']
-		mylist = list(gooddat)[1::]
-		for i in range(len(mylist)):
-			ticker = mylist[i]
-			y = gooddat[ticker].values #closing prices
-			
-			if 5==5:
-				plt.plot(dates[0::timestep], gooddat[ticker].values[0::timestep], ".g") #stock price
-				#plt.plot(x[0::timestep], data['Close'].values[0::timestep], ".r")
-				for jj in range(len(m_avgsT)):
-					#mvdata = gooddat[ticker].rolling(window = jj).mean()[0::timestep]
-					mvdata = get_exp_moving_avg(gooddat[ticker],n_steps = m_avgsT[jj])
-					plt.plot(dates[0::timestep],mvdata,'r')
-				for jj in range(len(m_avgsI)):
-					#mvdata = gooddat[ticker].rolling(window = jj).mean()[0::timestep]
-					mvdata = get_exp_moving_avg(gooddat[ticker],n_steps = m_avgsI[jj])
-					plt.plot(dates[0::timestep],mvdata,'b')
-				plt.title(ticker+' -- '+start+' to '+end)	
-				plt.show()
-						
-		#tck = interpolate.splrep(x, y, k=2, s=1)
-		#plt.plot(x,y,'r')
-		#plt.plot_date(x,tck[1][0:-2],'b')
-		#plt.show()
