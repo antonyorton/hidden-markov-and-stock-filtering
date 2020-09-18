@@ -142,15 +142,9 @@ if __name__ == "__main__":
 		alldat.to_csv('all_stocks_close_1996to2020.csv')
 
 		
-	#read all stocks and get guppys
-	if 1==1:
-	data = pd.read_csv('all_stocks_close_1996to2020.csv')
-	data = data.fillna(method = 'ffill')
-	data = data.fillna(method = 'bfill')
+	#read all stocks, get guppys and apply filters
+	#2020-09-08 to be continued ..
 	
-
-
-
 	
 	#get the well performing stocks and save to csv (To be updated)
 	if 1==2:
