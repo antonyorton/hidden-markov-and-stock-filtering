@@ -92,12 +92,37 @@ def get_movingavgs(data,ticker = 'MQG'):
 		investor_ma = np.hstack((investor_ma,np.c_[get_exp_moving_avg(datanew,n_steps = investors[i])]))
 		
 	return (trader_ma,investor_ma)
+
+def read_multiple_tickers(tickers = ['MQG','BHP','CBA','TLS'], date_range = ['2020-01-01','2020-09-09'], dailyvalue = 'Close'):
+	""" read in multiple stock tickers from Yahoo Finance
+		and extract the date/price data
+
+		tickers: list of asx tickers eg ['BHP']
+		date_range: list [start date, end date]
+		dailyvalue: string 'Open','High','Low','Close' daily price value to extract (case sensitive)
+		.
+		returns: DataFrame
+		.
+	
+	"""
+	
+	newticks = [item+'.AX' for item in tickers]
+
+	vals, percents, vocab = dataprep.get_stock_data(ticker = newticks[0], startdate = date_range[0], enddate = date_range[1], check_data = False)
+	data = pd.DataFrame(vals.index.values, columns = ['Date'])
+	data[tickers[0]] = vals[dailyvalue].values
+	
+	for i in range(1, len(newticks)):
+		vals, percents, vocab = dataprep.get_stock_data(ticker = newticks[i], startdate = date_range[0], enddate = date_range[1], check_data = False)
+		data[tickers[i]] = vals[dailyvalue].values
+	
+	return data
 	
 if __name__ == "__main__":
 
 
 	#interesting stocks 'FZO.AX', 'CDA.AX', 'MP1(number 1)','SAR','A2M', 'VOR (clear)'
-	start = '1996-09-05'
+	start = '2015-09-05'
 	end = '2020-09-05'
 	tot_days = (pd.to_datetime(end) - pd.to_datetime(start)).days
 	all_tickers = pd.read_csv('ASXListedCompanies.csv',skiprows=1)
@@ -112,9 +137,10 @@ if __name__ == "__main__":
 	
 	
 	
-	#get indicies of all those stocks (yahoo finance) higher at date end compared to date start
+	#get indicies of all those stocks (yahoo finance) higher at date end compared to date start (rank in order of gain)
 	if 1==2:
 		inds = []
+		gains = []
 		for i in range(len(all_tickers)):
 			try:
 				data, percents, vocab = dataprep.get_stock_data(ticker = all_tickers.iloc[i]['ASX code'], startdate=start, enddate=end, check_data = False)
@@ -125,7 +151,8 @@ if __name__ == "__main__":
 						print(i)
 			except:
 				print('Error: Unable to load data','ticker no ',i)
-	
+		
+		
 	#get all stocks (yahoo finance) between start and end date and save to a csv file
 	print(len(all_tickers))
 	if 1==2:
@@ -144,4 +171,4 @@ if __name__ == "__main__":
 		
 	#read all stocks, get guppys and apply filters
 	#2020-09-08 to be continued ..
-	
+	data, percents, vocab = dataprep.get_stock_data(ticker = 'BHP.AX', startdate=start, enddate=end, check_data = False)
